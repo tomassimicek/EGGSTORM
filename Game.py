@@ -4,7 +4,6 @@ from GameGraphics import GameGraphics
 from GameBackground import GameBackground
 from MainMenu import MainMenu
 from Hearts import Hearts
-from Level2 import Level2
 
 class Game:
     def __init__(self, screen, level=1):
