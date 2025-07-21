@@ -23,7 +23,7 @@ class MainMenu:
         self.controls_button = pygame.Rect(start_x + (total_width - button_width) // 2, 275, button_width, button_height)  # Controls button - posunuto o 15px dolů
         self.quit_button = pygame.Rect(start_x + (total_width - button_width) // 2, 355, button_width, button_height)   # Quit button - posunuto o 15px dolů
         # Načtení pozadí menu
-        self.background_image = pygame.image.load("images/pozadi menu.png")  # Set your background image path here
+        self.background_image = pygame.image.load("images/pozadi_menu.png")  # Set your background image path here
         self.background = pygame.transform.scale(self.background_image, (600, 800))  # Scale the background to fit the screen
 
     def display(self):
