@@ -50,24 +50,13 @@ class Game:
                     running = False
                     return 'quit'
                 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        # Při stisknutí ESC zobrazíme menu pauzy
-                        result = self.display_paused()
-                        if result == 'menu':
-                            return 'menu'
-                        elif result == 'quit':
-                            return 'quit'
+                # ESC key functionality has been removed as requested
                     
                     # Ovládání vlka
                     if event.key == pygame.K_LEFT:
                         self.game_logic.move_wolf('left')
                     elif event.key == pygame.K_RIGHT:
                         self.game_logic.move_wolf('right')
-                    elif event.key == pygame.K_UP:
-                        self.game_logic.move_wolf('up')
-                    elif event.key == pygame.K_DOWN:
-                        self.game_logic.move_wolf('down')
             
             # Aktualizace logiky hry
             game_state = self.game_logic.update()
@@ -405,16 +394,16 @@ class Game:
         title_rect = title_text.get_rect(center=(300, 200))
         self.screen.blit(title_text, title_rect)
 
-        # Zobrazení skóre
+        # Zobrazení levelu (posunuto níže)
         font_score = pygame.font.SysFont("Arial", 48)
-        score_text = font_score.render(f"Score: {self.game_logic.score}", True, (255, 255, 255))
-        score_rect = score_text.get_rect(center=(300, 300))
-        self.screen.blit(score_text, score_rect)
-        
-        # Zobrazení levelu
         level_text = font_score.render(f"Level: {self.game_logic.level}", True, (255, 255, 255))
-        level_rect = level_text.get_rect(center=(300, 250))
+        level_rect = level_text.get_rect(center=(300, 300))  # Posunuto z 250 na 300
         self.screen.blit(level_text, level_rect)
+        
+        # Zobrazení skóre (posunuto níže pod level)
+        score_text = font_score.render(f"Score: {self.game_logic.score}", True, (255, 255, 255))
+        score_rect = score_text.get_rect(center=(300, 360))  # Posunuto z 300 na 360
+        self.screen.blit(score_text, score_rect)
 
         # Vytvoření tlačítek
         font_button = pygame.font.SysFont("Arial", 36)
@@ -634,15 +623,8 @@ def run_game(self):
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                elif event.key == pygame.K_p:
+                if event.key == pygame.K_p:
                     self.paused = not self.paused
-                elif event.key == pygame.K_r and not running:  # Restart hry
-                    self.__init__(self.screen)
-                    self.run_game()
-                elif event.key == pygame.K_d:  # Ladící klávesa pro výpis informací
-                    pass
 
         if not self.paused:
             keys = pygame.key.get_pressed()

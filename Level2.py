@@ -27,7 +27,6 @@ class Level2:
         self.score = 0
         
         # Nastavení obtížnosti pro druhý level
-        self.wolf_speed_multiplier = 1.5  # Vlk je rychlejší
         self.egg_drop_frequency = 0.02     # Vyšší frekvence házení vajec
     
     def update(self):
