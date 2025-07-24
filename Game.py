@@ -64,9 +64,7 @@ class Game:
             # Kontrola stavu hry
             if game_state == 'game_over':
                 result = self.display_game_over()
-                if result == 'restart':
-                    return self.restart_game()
-                elif result == 'menu':
+                if result == 'menu':
                     return 'menu'
                 elif result == 'quit':
                     return 'quit'
@@ -94,12 +92,6 @@ class Game:
             clock.tick(60)
         
         return 'quit'  # Tento řádek by se nikdy neměl provést, ale je zde pro jistotu
-
-    def restart_game(self):
-        # Restart hry s aktuálním levelem
-        current_level = self.game_logic.level  # Uložíme si aktuální level
-        self.__init__(self.screen, current_level)  # Předáme aktuální level do nové instance
-        return self.run_game()
 
     def run_game(self):
         # Resetování hry
@@ -204,19 +196,10 @@ class Game:
         text_rect = game_over_text.get_rect(center=(self.screen.get_width() / 2, 200))
         self.screen.blit(game_over_text, text_rect)
 
-        # Tlačítko Restart
-        restart_font = pygame.font.SysFont("Arial", 40)
-        restart_text = restart_font.render("Restart", True, (255, 255, 255))
-        restart_button = pygame.Rect(200, 400, 200, 50)
-        restart_button_color = (0, 102, 204)
-        pygame.draw.rect(self.screen, restart_button_color, restart_button)
-        restart_text_rect = restart_text.get_rect(center=restart_button.center)
-        self.screen.blit(restart_text, restart_text_rect)
-
         # Tlačítko Exit
         exit_font = pygame.font.SysFont("Arial", 40)
         exit_text = exit_font.render("Exit", True, (255, 255, 255))
-        exit_button = pygame.Rect(200, 500, 200, 50)
+        exit_button = pygame.Rect(200, 400, 200, 50)  # Moved up to where restart button was
         exit_button_color = (204, 0, 0)
         pygame.draw.rect(self.screen, exit_button_color, exit_button)
         exit_text_rect = exit_text.get_rect(center=exit_button.center)
@@ -228,12 +211,6 @@ class Game:
         while waiting:
             mouse_pos = pygame.mouse.get_pos()
 
-            # Změna barvy tlačítka Restart při najetí
-            if restart_button.collidepoint(mouse_pos):
-                restart_button_color = (100, 150, 255)  # Světlejší modrá jako v menu
-            else:
-                restart_button_color = (0, 102, 204)  # Původní modrá
-
             # Změna barvy tlačítka Exit při najetí
             if exit_button.collidepoint(mouse_pos):
                 exit_button_color = (255, 120, 120)  # Světlejší červená jako v menu
@@ -243,11 +220,7 @@ class Game:
             # Překreslení obrazovky s aktuálními barvami
             self.screen.blit(overlay, (0, 0))
             self.screen.blit(game_over_text, text_rect)
-
-            pygame.draw.rect(self.screen, restart_button_color, restart_button)
             pygame.draw.rect(self.screen, exit_button_color, exit_button)
-
-            self.screen.blit(restart_text, restart_text_rect)
             self.screen.blit(exit_text, exit_text_rect)
 
             pygame.display.flip()
@@ -258,8 +231,6 @@ class Game:
                     return 'exit'
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    if restart_button.collidepoint(mouse_pos):
-                        return 'restart'
                     if exit_button.collidepoint(mouse_pos):
                         pygame.quit()
                         return 'exit'
@@ -274,19 +245,10 @@ class Game:
         text_rect = win_text.get_rect(center=(self.screen.get_width() / 2, 200))
         self.screen.blit(win_text, text_rect)
 
-        # Tlačítko Restart
-        restart_font = pygame.font.SysFont("Arial", 40)
-        restart_text = restart_font.render("Restart", True, (255, 255, 255))
-        restart_button = pygame.Rect(200, 400, 200, 50)
-        restart_button_color = (100, 100, 100)
-        pygame.draw.rect(self.screen, restart_button_color, restart_button)
-        restart_text_rect = restart_text.get_rect(center=restart_button.center)
-        self.screen.blit(restart_text, restart_text_rect)
-
         # Tlačítko Exit
         exit_font = pygame.font.SysFont("Arial", 40)
         exit_text = exit_font.render("Exit", True, (255, 255, 255))
-        exit_button = pygame.Rect(200, 500, 200, 50)
+        exit_button = pygame.Rect(200, 400, 200, 50)  # Moved up to where restart button was
         exit_button_color = (100, 100, 100)
         pygame.draw.rect(self.screen, exit_button_color, exit_button)
         exit_text_rect = exit_text.get_rect(center=exit_button.center)
@@ -303,31 +265,21 @@ class Game:
                 if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
 
-                    # Změna barvy tlačítka Restart při najetí
-                    if restart_button.collidepoint(mouse_pos):
-                        restart_button_color = (150, 150, 150)
-                    else:
-                        restart_button_color = (100, 100, 100)
-
                     # Změna barvy tlačítka Exit při najetí
                     if exit_button.collidepoint(mouse_pos):
                         exit_button_color = (150, 150, 150)
                     else:
                         exit_button_color = (100, 100, 100)
 
-                    # Překreslení tlačítek s aktuální barvou
+                    # Překreslení tlačítka s aktuální barvou
                     self.screen.fill((0, 0, 0))
                     self.screen.blit(win_text, text_rect)
-                    pygame.draw.rect(self.screen, restart_button_color, restart_button)
                     pygame.draw.rect(self.screen, exit_button_color, exit_button)
-                    self.screen.blit(restart_text, restart_text_rect)
                     self.screen.blit(exit_text, exit_text_rect)
                     pygame.display.flip()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    if restart_button.collidepoint(mouse_pos):
-                        return 'restart'
                     if exit_button.collidepoint(mouse_pos):
                         pygame.quit()
                         return 'exit'
@@ -405,31 +357,25 @@ class Game:
         score_rect = score_text.get_rect(center=(300, 360))  # Posunuto z 300 na 360
         self.screen.blit(score_text, score_rect)
 
-        # Vytvoření tlačítek
+        # Vytvoření tlačítka
         font_button = pygame.font.SysFont("Arial", 36)
-        restart_text = font_button.render("Restart", True, (255, 255, 255))
         menu_text = font_button.render("Exit to Menu", True, (255, 255, 255))
 
-        # Nastavení pozic tlačítek
-        restart_rect = pygame.Rect(150, 400, 300, 50)
-        menu_rect = pygame.Rect(150, 470, 300, 50)
+        # Nastavení pozice tlačítka
+        menu_rect = pygame.Rect(150, 400, 300, 50)  # Moved up to where restart button was
 
-        # Počáteční barvy tlačítek
-        restart_color = (0, 102, 204)  # Modrá
-        menu_color = (204, 0, 0)      # Červená
+        # Barva tlačítka
+        menu_color = (204, 0, 0)  # Červená
         
         # Čekání na akci uživatele
         waiting = True
         while waiting:
             mouse_pos = pygame.mouse.get_pos()
 
-            # Reset barev tlačítek
-            restart_color = (0, 102, 204)  # Výchozí modrá
-            menu_color = (204, 0, 0)      # Výchozí červená
+            # Reset barvy tlačítka
+            menu_color = (204, 0, 0)  # Výchozí červená
             
-            # Změna barev při najetí myší
-            if restart_rect.collidepoint(mouse_pos):
-                restart_color = (100, 150, 255)  # Světlejší modrá
+            # Změna barvy při najetí myší
             if menu_rect.collidepoint(mouse_pos):
                 menu_color = (255, 120, 120)  # Světlejší červená
                 
@@ -441,12 +387,10 @@ class Game:
             self.screen.blit(level_text, level_rect)
             self.screen.blit(score_text, score_rect)
 
-            # Vykreslení tlačítek
-            pygame.draw.rect(self.screen, restart_color, restart_rect)
+            # Vykreslení tlačítka
             pygame.draw.rect(self.screen, menu_color, menu_rect)
 
-            # Vykreslení textu tlačítek
-            self.screen.blit(restart_text, restart_text.get_rect(center=restart_rect.center))
+            # Vykreslení textu tlačítka
             self.screen.blit(menu_text, menu_text.get_rect(center=menu_rect.center))
 
             pygame.display.flip()
@@ -458,10 +402,6 @@ class Game:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     
-                    # Kliknutí na tlačítko Restart
-                    if restart_rect.collidepoint(mouse_pos):
-                        return 'restart'  # Vrátí 'restart' pro restart hry
-                        
                     # Kliknutí na tlačítko Menu
                     if menu_rect.collidepoint(mouse_pos):
                         self.game_logic = GameLogic(self.hearts)
