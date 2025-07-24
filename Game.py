@@ -10,21 +10,17 @@ class Game:
         self.screen = screen
         self.level = level
         
-        # Inicializace GameLogic s aktuálním levelem
         self.hearts = Hearts(screen)
         self.game_logic = GameLogic(self.hearts)
         self.game_logic.level = level
-
         
-        # Vybrat pozadí podle aktuálního levelu
         background_images = {
-            1: "images/pozadi_hry.png",  # Opravena cesta k pozadí pro Level 1
+            1: "images/pozadi_hry.png",
             2: "images/pozadi_hry_lvl2.png"
         }
         background_image = background_images.get(level, background_images[1])
         self.game_background = GameBackground(screen, background_image)
         
-        # Reset hry s novým levelem
         self.game_logic.reset_game()
         
         self.game_graphics = GameGraphics(screen)
@@ -34,11 +30,9 @@ class Game:
         self.paused = False
 
     def game_loop(self):
-        # Původní implementace game_loop, kterou přesouváme do run_game
         return self.run_game()
         
     def run_game(self):
-        # Resetování hry
         self.game_logic.reset_game()
         running = True
         clock = pygame.time.Clock()
@@ -50,18 +44,14 @@ class Game:
                     running = False
                     return 'quit'
                 
-                # ESC key functionality has been removed as requested
-                    
-                    # Ovládání vlka
+                if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
                         self.game_logic.move_wolf('left')
                     elif event.key == pygame.K_RIGHT:
                         self.game_logic.move_wolf('right')
             
-            # Aktualizace logiky hry
             game_state = self.game_logic.update()
             
-            # Kontrola stavu hry
             if game_state == 'game_over':
                 result = self.display_game_over()
                 if result == 'menu':
@@ -77,7 +67,6 @@ class Game:
                 elif result == 'quit':
                     return 'quit'
             
-            # Vykreslení hry
             self.game_background.display()
             self.game_graphics.draw_wolf(self.game_logic.wolf)
             self.game_graphics.draw_hens(self.game_logic.hens)
@@ -91,10 +80,9 @@ class Game:
             pygame.display.flip()
             clock.tick(60)
         
-        return 'quit'  # Tento řádek by se nikdy neměl provést, ale je zde pro jistotu
+        return 'quit'
 
     def run_game(self):
-        # Resetování hry
         self.game_logic.reset_game()
         running = True
         clock = pygame.time.Clock()
@@ -121,20 +109,14 @@ class Game:
                 self.game_graphics.draw_hens(self.game_logic.hens)
                 self.game_graphics.draw_eggs(self.game_logic.eggs)
                 self.game_graphics.draw_score(self.game_logic.score)
-                # Vykreslení levelu
                 self.game_graphics.draw_level(self.game_logic.level)
-                # Vykreslení srdíček
                 self.hearts.draw()
 
-                # Generování vajíček s ohledem na pozastavení
                 self.game_logic.generate_eggs(is_paused=self.paused)
                 result = self.game_logic.update()
 
-                # Kontrola stavu hry
                 if result == 'you_won':
-                    # Zobrazení aktuálního skóre
                     current_score = self.game_logic.score
-                    # Překreslení obrazovky s novým skóre
                     self.game_background.display()
                     self.game_graphics.draw_wolf(self.game_logic.wolf)
                     self.game_graphics.draw_hens(self.game_logic.hens)
@@ -144,43 +126,34 @@ class Game:
                     self.hearts.draw()
                     pygame.display.flip()
                     
-                    # Získání výsledku zobrazení výsledku hry
                     menu_result = self.display_game_result(True)
                     if menu_result == 'restart':
-                        # Restartujeme aktuální level
                         return 'restart'
                     elif menu_result == 'continue':
-                        # Zvýšíme level v GameLogic
-                        if self.game_logic.level < 2:  # Máme jen 2 levely
+                        if self.game_logic.level < 2:
                             self.game_logic.level += 1
-                            # Reset hry s novým levelem
                             self.game_logic.hens = self.game_logic._generate_hens()
                             self.game_logic.score = 0
                             self.game_logic.hearts.reset()
                             return 'continue'
                     
-                    # Pro ostatní výsledky (menu, quit) vrátíme přímo výsledek
                     return menu_result
                     
                 elif self.hearts.is_game_over():
                     menu_result = self.display_game_result(False)
                     if menu_result == 'restart':
-                        return 'restart'  # Vrátíme 'restart' pro restart aktuálního levelu
-                    return menu_result  # Vrátíme ostatní výsledky (menu, quit)
-
-                # Zobrazení FPS odstraněno podle požadavku uživatele
+                        return 'restart'
+                    return menu_result
 
                 pygame.display.flip()
                 clock.tick(60)
             else:
-                # Pozastavení hry
                 pause_result = self.display_paused()
                 if pause_result == 'continue':
                     self.paused = False
                 elif pause_result == 'exit':
                     running = False
                 elif pause_result == 'menu':
-                    # Reset hry a návrat do menu
                     self.game_logic = GameLogic(self.hearts)
                     self.game_graphics = GameGraphics(self.screen)
                     return 'menu'
@@ -196,10 +169,9 @@ class Game:
         text_rect = game_over_text.get_rect(center=(self.screen.get_width() / 2, 200))
         self.screen.blit(game_over_text, text_rect)
 
-        # Tlačítko Exit
         exit_font = pygame.font.SysFont("Arial", 40)
         exit_text = exit_font.render("Exit", True, (255, 255, 255))
-        exit_button = pygame.Rect(200, 400, 200, 50)  # Moved up to where restart button was
+        exit_button = pygame.Rect(200, 400, 200, 50)
         exit_button_color = (204, 0, 0)
         pygame.draw.rect(self.screen, exit_button_color, exit_button)
         exit_text_rect = exit_text.get_rect(center=exit_button.center)
@@ -211,13 +183,11 @@ class Game:
         while waiting:
             mouse_pos = pygame.mouse.get_pos()
 
-            # Změna barvy tlačítka Exit při najetí
             if exit_button.collidepoint(mouse_pos):
-                exit_button_color = (255, 120, 120)  # Světlejší červená jako v menu
+                exit_button_color = (255, 120, 120)
             else:
-                exit_button_color = (204, 0, 0)  # Původní červená
+                exit_button_color = (204, 0, 0)
 
-            # Překreslení obrazovky s aktuálními barvami
             self.screen.blit(overlay, (0, 0))
             self.screen.blit(game_over_text, text_rect)
             pygame.draw.rect(self.screen, exit_button_color, exit_button)
@@ -239,16 +209,15 @@ class Game:
         return 'exit'
 
     def display_win(self):
-        self.screen.fill((0, 0, 0))  # Černé pozadí
+        self.screen.fill((0, 0, 0))
         win_font = pygame.font.SysFont("Arial", 70)
         win_text = win_font.render("YOU WON!", True, (0, 255, 0))
         text_rect = win_text.get_rect(center=(self.screen.get_width() / 2, 200))
         self.screen.blit(win_text, text_rect)
 
-        # Tlačítko Exit
         exit_font = pygame.font.SysFont("Arial", 40)
         exit_text = exit_font.render("Exit", True, (255, 255, 255))
-        exit_button = pygame.Rect(200, 400, 200, 50)  # Moved up to where restart button was
+        exit_button = pygame.Rect(200, 400, 200, 50)
         exit_button_color = (100, 100, 100)
         pygame.draw.rect(self.screen, exit_button_color, exit_button)
         exit_text_rect = exit_text.get_rect(center=exit_button.center)
@@ -265,13 +234,11 @@ class Game:
                 if event.type == pygame.MOUSEMOTION or event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
 
-                    # Změna barvy tlačítka Exit při najetí
                     if exit_button.collidepoint(mouse_pos):
                         exit_button_color = (150, 150, 150)
                     else:
                         exit_button_color = (100, 100, 100)
 
-                    # Překreslení tlačítka s aktuální barvou
                     self.screen.fill((0, 0, 0))
                     self.screen.blit(win_text, text_rect)
                     pygame.draw.rect(self.screen, exit_button_color, exit_button)
@@ -287,19 +254,16 @@ class Game:
         return 'exit'
 
     def display_paused(self):
-        # Tmavé pozadí s průhledností
         overlay = pygame.Surface((600, 800))
-        overlay.set_alpha(200)  # Nastavení průhlednosti (0-255)
-        overlay.fill((0, 0, 0))  # Černá barva
+        overlay.set_alpha(200)
+        overlay.fill((0, 0, 0))
         self.screen.blit(overlay, (0, 0))
 
-        # Font pro text
         pause_font = pygame.font.SysFont("Arial", 70)
         pause_text = pause_font.render("PAUSED", True, (255, 255, 255))
         text_rect = pause_text.get_rect(center=(self.screen.get_width() / 2, 200))
         self.screen.blit(pause_text, text_rect)
 
-        # Tlačítko Pokračovat
         continue_font = pygame.font.SysFont("Arial", 40)
         continue_text = continue_font.render("Continue", True, (255, 255, 255))
         continue_button = pygame.Rect(200, 400, 200, 50)
@@ -307,7 +271,6 @@ class Game:
         continue_text_rect = continue_text.get_rect(center=continue_button.center)
         self.screen.blit(continue_text, continue_text_rect)
 
-        # Tlačítko Exit
         exit_font = pygame.font.SysFont("Arial", 40)
         exit_text = exit_font.render("Exit", True, (255, 255, 255))
         exit_button = pygame.Rect(200, 500, 200, 50)
@@ -337,10 +300,8 @@ class Game:
         return 'exit'
 
     def display_game_result(self, is_win):
-        # Černé pozadí
         self.screen.fill((0, 0, 0))
 
-        # Nadpis
         font_title = pygame.font.SysFont("Arial", 72, bold=True)
         title_text = font_title.render("YOU WON!" if is_win else "GAME OVER!", True, (255, 255, 255))
         title_rect = title_text.get_rect(center=(300, 200))
