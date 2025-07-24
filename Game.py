@@ -300,8 +300,10 @@ class Game:
         return 'exit'
 
     def display_game_result(self, is_win):
+        # Černé pozadí
         self.screen.fill((0, 0, 0))
 
+        # Nadpis
         font_title = pygame.font.SysFont("Arial", 72, bold=True)
         title_text = font_title.render("YOU WON!" if is_win else "GAME OVER!", True, (255, 255, 255))
         title_rect = title_text.get_rect(center=(300, 200))
