@@ -86,15 +86,16 @@ class GameLogic:
         """
         game_width = 600  # Šířka herní obrazovky
         wolf_width = 40  # Šířka vlka
-        move_speed = 5  # Snížení rychlosti pohybu
+        move_speed = 5  # Rychlost pohybu
+        right_margin = 50  # Odsazení od pravého okraje obrazovky
 
         if direction == "left":
-            # Pohyb doleva s přesným omezením
+            # Pohyb doleva až k levému okraji
             self.wolf.x = max(0, self.wolf.x - move_speed)
             self.wolf.direction = "left"
         elif direction == "right":
-            # Pohyb doprava s přesným omezením
-            self.wolf.x = min(580 - wolf_width, self.wolf.x + move_speed)
+            # Pohyb doprava s odsazením od pravého okraje
+            self.wolf.x = min(game_width - wolf_width - right_margin, self.wolf.x + move_speed)
             self.wolf.direction = "right"
 
     def generate_eggs(self, is_paused=False):
